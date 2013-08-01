@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Circles", "Circles\Circles.vcxproj", "{FC51BEA4-A649-48B4-A5C0-3D8A293A6618}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{FC51BEA4-A649-48B4-A5C0-3D8A293A6618}.Debug|Win32.ActiveCfg = Debug|Win32
+		{FC51BEA4-A649-48B4-A5C0-3D8A293A6618}.Debug|Win32.Build.0 = Debug|Win32
+		{FC51BEA4-A649-48B4-A5C0-3D8A293A6618}.Release|Win32.ActiveCfg = Release|Win32
+		{FC51BEA4-A649-48B4-A5C0-3D8A293A6618}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
