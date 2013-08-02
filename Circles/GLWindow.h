@@ -22,14 +22,15 @@ typedef void (* GLmousebuttonfun)(int,int);
 //	bool running;
 //};
 
-bool GLWindowCreate(const char*, int, int);
+bool GLWindowCreate(const char* title, int width, int height);
 void GLWindowDestroy();
 
+void GLWindowClientSize(int* width, int* height);
+
 bool GLWindowShouldClose();
-void GLSetWindowShouldClose(int);
+void GLSetWindowShouldClose(int close);
 
 void GLPollEvents();
 void GLSwapBuffers();
 
 void GLSetMouseButtonCallback(GLmousebuttonfun);
-//void GLWindowDestroy();

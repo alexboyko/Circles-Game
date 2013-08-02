@@ -4,7 +4,7 @@
 #include "stdafx.h"
 #include "Circles.h"
 #include "GLWindow.h"
-#include "Timer.h"
+#include "CirclesApp.h"
 
 // platform specific entry point
 #ifdef _WIN32
@@ -19,39 +19,19 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hInstance);
 	UNREFERENCED_PARAMETER(nCmdShow);
 
-	Timer t;
-
-	int width = 400;
-	int height = 600;
-
-	GLWindowCreate("Circles Game", width, height);
-	while (!GLWindowShouldClose())
+	CirclesApp* app = new CirclesApp(400, 600, "Circles Game");
+	// window creation and context binding
+	if (!app->Init())
 	{
-		float ratio = (float)width / height;
-
-		glViewport(0, 0, width, height);
-		glClear(GL_COLOR_BUFFER_BIT);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(-ratio, ratio, -1.f, 1.f, 1.f, -1.f);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glRotatef((float) t.GetTime() * 50.f, 0.f, 0.f, 1.f);
-		glBegin(GL_TRIANGLES);
-		glColor3f(1.f, 0.f, 0.f);
-		glVertex3f(-0.6f, -0.4f, 0.f);
-		glColor3f(0.f, 1.f, 0.f);
-		glVertex3f(0.6f, -0.4f, 0.f);
-		glColor3f(0.f, 0.f, 1.f);
-		glVertex3f(0.f, 0.6f, 0.f);
-		glEnd();
-
-
-		GLPollEvents();
-		GLSwapBuffers();
+		delete app;
+		return 1;
 	}
 
-	GLWindowDestroy();
+	// main cycle
+	app->Run();
+
+	// destroy application
+	delete app;
 
 	return 0;
 }

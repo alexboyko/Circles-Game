@@ -5,6 +5,7 @@ class Timer
 public:
 	Timer();
 	double GetTime() const;
+	double GetAbsoluteTime() const;
 protected:
 	bool m_bUsePerformanceCounter;
 	__int64 m_lFrequency;

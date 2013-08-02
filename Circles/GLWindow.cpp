@@ -2,6 +2,7 @@
 #include "GLWindow.h"
 
 HDC              g_hDC;											// device context of window
+HWND             g_hWnd;										// window handle
 HGLRC            g_hGLRC;										// OpenGL rendering context
 HINSTANCE        g_hInst;										// current instance
 TCHAR            g_szWindowClass[] = _T("CIRCLES_GAME_CLASS");	// the main window class name
@@ -36,6 +37,14 @@ bool GLWindowCreate(const char *title, int width, int height)
 void GLWindowDestroy()
 {
 	
+}
+
+void GLWindowClientSize(int* width, int* height)
+{
+	RECT rcClient;
+	GetClientRect(g_hWnd, &rcClient);
+	*width = rcClient.right - rcClient.left;
+	*height = rcClient.bottom - rcClient.top;
 }
 
 void GLPollEvents()
@@ -156,7 +165,7 @@ BOOL InitInstance(const char* title, int width, int height)
 
 	WCHAR* wTitle = _createWideStringFromUTF8(title);
 
-	HWND hWnd = CreateWindowEx(
+	g_hWnd = CreateWindowEx(
 		WS_EX_APPWINDOW,			// Force onto the taskbar when visible
 		g_szWindowClass,			// Registered window class
 		wTitle,						// Window title
@@ -165,12 +174,12 @@ BOOL InitInstance(const char* title, int width, int height)
 		width, height,				// Size
 		NULL, NULL, g_hInst, NULL);
 
-	if (!hWnd)
+	if (!g_hWnd)
 	{
 		return FALSE;
 	}
 
-	g_hDC = GetDC(hWnd);
+	g_hDC = GetDC(g_hWnd);
 
 	if (!g_hDC)
 	{
@@ -200,8 +209,8 @@ BOOL InitInstance(const char* title, int width, int height)
 	g_hGLRC = wglCreateContext(g_hDC);
 	wglMakeCurrent(g_hDC, g_hGLRC);
 
-	ShowWindow(hWnd, SW_SHOWDEFAULT);
-	UpdateWindow(hWnd);
+	ShowWindow(g_hWnd, SW_SHOWDEFAULT);
+	UpdateWindow(g_hWnd);
 
 	return TRUE;
 }

@@ -20,17 +20,18 @@ Timer::Timer()
     }
 }
 
-double Timer::GetTime() const
+double Timer::GetAbsoluteTime() const
 {
-	__int64 t;
 	if (m_bUsePerformanceCounter)
 	{
 		__int64 elapsedTime;
 		QueryPerformanceCounter(reinterpret_cast<LARGE_INTEGER*>(&elapsedTime));
-		t = elapsedTime - m_lTimerStart;
+		return elapsedTime * m_dResolution;
 	}
-	else
-		t = timeGetTime() - m_lTimerStart;
-	
-	return t * m_dResolution;
+	return timeGetTime() * m_dResolution;
+}
+
+double Timer::GetTime() const
+{
+	return GetAbsoluteTime() - m_dResolution * m_lTimerStart;
 }
