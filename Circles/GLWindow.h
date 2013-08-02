@@ -27,6 +27,8 @@ void GLWindowDestroy();
 
 void GLWindowClientSize(int* width, int* height);
 
+void GLWindowBuildFont(const char* name, GLuint* base);
+
 bool GLWindowShouldClose();
 void GLSetWindowShouldClose(int close);
 

@@ -11,6 +11,7 @@ int Random(int from, int to)
 CirclesApp::CirclesApp(int width, int height, const char* title) 
 	: m_iWidth(width), m_iHeight(height), m_szTitle(title), m_iMaxSimultaneous(10)
 {
+	m_iScore = 1920;
 	m_pTimer = new Timer();
 	// random generator
 	srand(m_pTimer->GetAbsoluteTime() * 100);
@@ -18,7 +19,10 @@ CirclesApp::CirclesApp(int width, int height, const char* title)
 
 bool CirclesApp::Init()
 {
+	// create opengl window
 	bool res = GLWindowCreate(m_szTitle, m_iWidth, m_iHeight);
+	// initialize font bitmap
+	GLWindowBuildFont("Courier New", &m_uiFontBase);
 	// actual window client area size
 	GLWindowClientSize(&m_iWidth, &m_iHeight);
 	return res;
@@ -63,6 +67,19 @@ void CirclesApp::Render()
 	glClear(GL_COLOR_BUFFER_BIT);
 	for (std::list<Circle*>::iterator i = m_lCircles.begin(); i != m_lCircles.end(); ++i)
 		(*i)->Draw();
+	PrintScore(m_iScore);
+}
+
+void CirclesApp::PrintScore(int score)
+{
+	char text[256];
+	sprintf_s(text, "Score: %d", score);
+	glColor3f(1.f, 1.f, 1.f);
+	glRasterPos2f(10.f, 10.f);
+	glPushAttrib(GL_LIST_BIT);
+	glListBase(m_uiFontBase - 32);						// set base character to 32
+	glCallLists(strlen(text), GL_UNSIGNED_BYTE, text);	// draw list text
+	glPopAttrib();
 }
 
 CirclesApp::~CirclesApp()

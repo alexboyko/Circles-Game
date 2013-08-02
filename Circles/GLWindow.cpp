@@ -84,6 +84,40 @@ void GLSetMouseButtonCallback(GLmousebuttonfun callback)
 	g_fMouseButtonCallback = callback;
 }
 
+void GLWindowBuildFont(const char* name, GLuint* base)
+{
+	// font handles
+	HFONT	hFont;
+	HFONT	hOldFont;
+
+	// create diplay list for font
+	*base = glGenLists(96);
+
+	WCHAR* wName = _createWideStringFromUTF8(name);
+
+	hFont = CreateFont(
+		-24,							// height of font
+		0,								// width of font
+		0,								// angle of escapement
+		0,								// orientation angle
+		FW_BOLD,						// font weight
+		FALSE,							// italic
+		FALSE,							// underline
+		FALSE,							// strikeout
+		ANSI_CHARSET,					// character set identifier
+		OUT_TT_PRECIS,					// output precision
+		CLIP_DEFAULT_PRECIS,			// clipping precision
+		ANTIALIASED_QUALITY,			// output quality
+		FF_DONTCARE | DEFAULT_PITCH,	// family and pitch
+		wName);							// font name
+
+	hOldFont = (HFONT)SelectObject(g_hDC, hFont);
+	wglUseFontBitmaps(g_hDC, 32, 96, *base);
+	// restore previous font
+	SelectObject(g_hDC, hOldFont);
+	DeleteObject(hFont);
+}
+
 //
 //  FUNCTION: RegisterWindowClass()
 //
