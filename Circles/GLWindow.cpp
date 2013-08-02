@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GLWindow.h"
+#include <windowsx.h>
 
 HDC              g_hDC;											// device context of window
 HWND             g_hWnd;										// window handle
@@ -8,6 +9,8 @@ HINSTANCE        g_hInst;										// current instance
 TCHAR            g_szWindowClass[] = _T("CIRCLES_GAME_CLASS");	// the main window class name
 GLmousebuttonfun g_fMouseButtonCallback;						// the callback for mouse button press event
 bool             g_bWindowShouldClose;							// flag indicating that window should be closed
+int              g_iMouseX, g_iMouseY;							// mouse cursor position
+
 //GLWindow  g_window;
 
 // Forward declarations
@@ -36,7 +39,16 @@ bool GLWindowCreate(const char *title, int width, int height)
 
 void GLWindowDestroy()
 {
-	
+	if (g_hGLRC)
+	{
+		wglMakeCurrent(NULL, NULL);
+		wglDeleteContext(g_hGLRC);
+	}
+	if (g_hDC)
+		ReleaseDC(g_hWnd, g_hDC);
+	if (g_hWnd)
+		DestroyWindow(g_hWnd);
+	UnregisterClass(g_szWindowClass, g_hInst);
 }
 
 void GLWindowClientSize(int* width, int* height)
@@ -153,25 +165,21 @@ ATOM RegisterWindowClass(HINSTANCE hInstance)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
-	PAINTSTRUCT ps;
-	HDC hdc;
-
 	switch (message)
 	{
-	case WM_PAINT:
-		hdc = BeginPaint(hWnd, &ps);
-		// TODO: Add any drawing code here...
-		EndPaint(hWnd, &ps);
-		break;
 	case WM_LBUTTONDOWN:
 	case WM_RBUTTONDOWN:
 		if (g_fMouseButtonCallback)
 		{
 			if (message == WM_LBUTTONDOWN)
-				g_fMouseButtonCallback(MOUSE_BUTTON_LEFT, MOUSE_BUTTON_DOWN);
+				g_fMouseButtonCallback(MOUSE_BUTTON_LEFT, MOUSE_BUTTON_DOWN, g_iMouseX, g_iMouseY);
 			else if (message == WM_RBUTTONDOWN)
-				g_fMouseButtonCallback(MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_DOWN);
+				g_fMouseButtonCallback(MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_DOWN, g_iMouseX, g_iMouseY);
 		}
+		break;
+	case WM_MOUSEMOVE:
+		g_iMouseX = GET_X_LPARAM(lParam);
+		g_iMouseY = GET_Y_LPARAM(lParam);
 		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);

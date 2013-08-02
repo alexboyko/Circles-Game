@@ -8,7 +8,7 @@
 #define MOUSE_BUTTON_DOWN	1
 
 // the function signature for mouse button callbacks
-typedef void (* GLmousebuttonfun)(int,int);
+typedef void (* GLmousebuttonfun)(int,int,int,int);
 
 //struct GLWindow
 //{

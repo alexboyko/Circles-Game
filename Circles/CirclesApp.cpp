@@ -8,10 +8,17 @@ int Random(int from, int to)
 	return floor(r * (to - from) + 0.5) + from;
 }
 
+// dirty hack, should be avoid in real applications
+CirclesApp* app;
+void MouseClickCallback(int button, int state, int x, int y)
+{
+	app->ProcessClick(x, y);	
+}
+
 CirclesApp::CirclesApp(int width, int height, const char* title) 
 	: m_iWidth(width), m_iHeight(height), m_szTitle(title), m_iMaxSimultaneous(10)
 {
-	m_iScore = 1920;
+	m_iScore = 0;
 	m_pTimer = new Timer();
 	// random generator
 	srand(m_pTimer->GetAbsoluteTime() * 100);
@@ -19,12 +26,16 @@ CirclesApp::CirclesApp(int width, int height, const char* title)
 
 bool CirclesApp::Init()
 {
+	// hack for callback
+	app = this;
 	// create opengl window
 	bool res = GLWindowCreate(m_szTitle, m_iWidth, m_iHeight);
 	// initialize font bitmap
 	GLWindowBuildFont("Courier New", &m_uiFontBase);
 	// actual window client area size
 	GLWindowClientSize(&m_iWidth, &m_iHeight);
+	// mouse button callback register
+	GLSetMouseButtonCallback(MouseClickCallback);
 	return res;
 }
 
@@ -70,6 +81,23 @@ void CirclesApp::Render()
 	PrintScore(m_iScore);
 }
 
+void CirclesApp::ProcessClick(int x, int y)
+{
+	// invert Y axe
+	y = m_iHeight - y;
+	for (std::list<Circle*>::reverse_iterator i = m_lCircles.rbegin(); i != m_lCircles.rend();)
+	{
+		if ((*i)->Hit(x, y))
+		{
+			m_iScore += (*i)->GetScore();
+			delete (*i);
+			m_lCircles.erase(--(i.base()));
+			return;
+		}
+		else ++i;
+	}
+}
+
 void CirclesApp::PrintScore(int score)
 {
 	char text[256];
@@ -108,6 +136,8 @@ Circle* CirclesApp::CreateCircle()
 	const int minRadius = 10;
 	const int maxSpeed = 500;
 	const int minSpeed = 200;
+	const int maxScore = 10;
+	const int minScore = 1;
 
 	Circle* c = new Circle();
 
@@ -118,11 +148,14 @@ Circle* CirclesApp::CreateCircle()
 
 	// Linear interpolatation of speed according to radius
 	double speed = maxSpeed - ((double)(r - minRadius) / (maxRadius - minRadius)) * (maxSpeed - minSpeed);
-	
+	// Linear interpolatation of speed according to radius
+	int score = maxScore - ((double)(r - minRadius) / (maxRadius - minRadius)) * (maxScore - minScore);
+
 	c->SetPosition(x, y);
 	c->SetRadius(r);
 	c->SetColor(Random(-30, 120), Random(-30, 120), Random(-30, 120));
 	c->SetSpeed(speed);
+	c->SetScore(score);
 
 	return c;
 }

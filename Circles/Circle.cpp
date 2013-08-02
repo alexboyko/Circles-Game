@@ -41,6 +41,11 @@ int Circle::GetRadius() const
 	return m_iRadius;
 }
 
+int Circle::GetScore() const
+{
+	return m_iScore;
+}
+
 void Circle::SetPosition(double x, double y)
 {
 	m_iPosX = x;
@@ -50,6 +55,18 @@ void Circle::SetPosition(double x, double y)
 void Circle::SetSpeed(double speed)
 {
 	m_dSpeed = speed;
+}
+
+void Circle::SetScore(int score)
+{
+	m_iScore = score;
+}
+
+bool Circle::Hit(int x, int y) const
+{
+	double dx = x - m_iPosX;
+	double dy = y - m_iPosY;
+	return dx * dx + dy * dy < m_iRadius * m_iRadius;
 }
 
 void Circle::Draw()
